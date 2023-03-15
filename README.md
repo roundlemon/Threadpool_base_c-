@@ -1,4 +1,4 @@
-# Threadpool_base_c-
+# Threadpool_base_cpp
 usage:
 1. make
 2. ./main
