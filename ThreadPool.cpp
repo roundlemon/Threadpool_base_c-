@@ -32,6 +32,11 @@ ThreadPool::ThreadPool(int minn, int maxx)
         {
             pthread_create(&workerIDs[i], nullptr, worker, this);
             cout << "创建子线程, ID: " << to_string(workerIDs[i]) << endl;
+            if (pthread_detach(workerIDs[i]))
+            {
+                delete[] workerIDs;
+                throw std::exception();
+            }
         }
 
         pthread_create(&managerID, nullptr, manager, this);
@@ -150,6 +155,11 @@ void *ThreadPool::manager(void *arg)
                 if (pool->workerIDs[i] == 0)
                 {
                     pthread_create(&pool->workerIDs[i], nullptr, worker, pool);
+                    if (pthread_detach(pool->workerIDs[i]))
+                    {
+                        delete[] pool->workerIDs;
+                        throw std::exception();
+                    }
                     counter++;
                     pool->alivenum++;
                     cout << "添加线程：" << to_string(pthread_self()) << " 现在存活线程数：" << pool->alivenum << endl;
